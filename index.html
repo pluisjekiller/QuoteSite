@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>QUOTES</title>
+</head>
+<body>
+    <header>
+        <h1>This website provides a dayly quote.</h1>
+    </header>
+    <main>
+        <article>
+            <div>
+                <h3>Quote of the day:</h3>
+                <P id="quote">Don't say: I have to work. Say: I can go to work!</P>
+            </div>
+        </article>
+    </main>
+    <footer>
+        <P>ALL RIGHTS RESERVED TO THE OWNER OF THIS WEBSITE</P>
+    </footer>
+    <script>
+
+// Function to fetch quotes from a text file
+function fetchQuotes() {
+    fetch('quotes.txt') // Replace 'quotes.txt' with the path to your text file
+        .then(response => response.text())
+        .then(data => {
+            // Split the text into an array of quotes (assuming one quote per line)
+            const quotesArray = data.split('\n');
+
+            // Get a random quote from the array
+            const randomIndex = Math.floor(Math.random() * quotesArray.length);
+            const randomQuote = quotesArray[randomIndex];
+
+            // Display the random quote on the webpage
+            document.getElementById('quote').textContent = randomQuote;
+        })
+        .catch(error => {
+            console.error('Error fetching quotes:', error);
+        });
+}
+
+// Function to check if it's a new day
+function isNewDay(previousDate) {
+    const currentDate = new Date();
+    return !previousDate || currentDate.getDate() !== previousDate.getDate();
+}
+
+// Function to update the quote on a new day
+function updateQuoteOnNewDay() {
+    const previousDate = new Date(localStorage.getItem('previousDate'));
+
+    if (isNewDay(previousDate)) {
+        fetchQuotes();
+        localStorage.setItem('previousDate', new Date());
+    }
+}
+
+// Set up an interval to check for a new day and update the quote
+setInterval(updateQuoteOnNewDay, 24 * 60 * 60 * 1000); // Check every 24 hours
+
+// Initial fetch of a random quote on page load
+fetchQuotes();
+
+
+    </script>
+</body>
+</html>
